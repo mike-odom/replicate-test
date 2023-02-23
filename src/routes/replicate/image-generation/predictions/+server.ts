@@ -3,10 +3,13 @@ import { REPLICATE_API_TOKEN } from '$env/static/private';
 
 interface RequestBody {
 	prompt: string;
+	modelVersion: string;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body: RequestBody = await request.json();
+
+	const { prompt, modelVersion } = body;
 
 	const response = await fetch('https://api.replicate.com/v1/predictions', {
 		method: 'POST',
@@ -17,10 +20,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		body: JSON.stringify({
 			// Pinned to a specific version of Stable Diffusion
 			// See https://replicate.com/stability-ai/stable-diffussion/versions
-			version: '6359a0cab3ca6e4d3320c33d79096161208e9024d174b2311e5a21b6c7e1131c',
+			// version: '6359a0cab3ca6e4d3320c33d79096161208e9024d174b2311e5a21b6c7e1131c',
+			version: modelVersion,
 
 			// This is the text prompt that will be submitted by a form on the frontend
-			input: { prompt: body?.prompt }
+			input: {
+				prompt
+			}
 		})
 	});
 

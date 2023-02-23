@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { construct_svelte_component } from 'svelte/internal';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
+	const { models } = data;
+
+	console.log('models', data.models);
 
 	let timerId: any;
+
+	let modelVersion: string;
 
 	const generateClick = async () => {
 		const response = await fetch('/replicate/image-generation/predictions', {
@@ -9,7 +18,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ prompt })
+			body: JSON.stringify({ prompt, modelVersion })
 		});
 
 		const data = await response.json();
@@ -67,6 +76,15 @@
 <form on:submit|preventDefault={generateClick}>
 	<input bind:value={prompt} type="text" name="prompt" />
 
+	{#if models}
+		<select bind:value={modelVersion}>
+			{#each models as model}
+				<option value={model.version}>
+					{model.path} - {model.description}
+				</option>
+			{/each}
+		</select>
+	{/if}
 	<button type="submit">Generate</button>
 </form>
 
