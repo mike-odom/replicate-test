@@ -18,7 +18,19 @@ export const load: PageServerLoad = async () => {
 	// }
 
 	try {
-		const models: Model[] = await replicate.getModels('diffusion-models');
+		const allModels: Model[] = await replicate.getModels('diffusion-models');
+
+		const blacklist = [
+			'tommoore515/material_stable_diffusion',
+			'deforum/deforum_stable_diffusion',
+			'arielreplicate/stable_diffusion_infinite_zoom',
+			'cjwbw/taiyi-stable-diffusion-1b-chinese-v0.1',
+			'cjwbw/multilingual-stable-diffusion',
+			'cjwbw/sd-textual-inversion',
+			'cjwbw/stable-diffusion-img2img-v2.1'
+		];
+
+		const models = allModels.filter((model) => !blacklist.includes(model.path));
 
 		console.log('what', models);
 		return {

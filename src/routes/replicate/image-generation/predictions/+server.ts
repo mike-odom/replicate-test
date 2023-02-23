@@ -4,12 +4,15 @@ import { REPLICATE_API_TOKEN } from '$env/static/private';
 interface RequestBody {
 	prompt: string;
 	modelVersion: string;
+	height: string;
+	width: string;
+	seed: string;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body: RequestBody = await request.json();
 
-	const { prompt, modelVersion } = body;
+	const { prompt, modelVersion, height, width, seed } = body;
 
 	const response = await fetch('https://api.replicate.com/v1/predictions', {
 		method: 'POST',
@@ -25,7 +28,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 			// This is the text prompt that will be submitted by a form on the frontend
 			input: {
-				prompt
+				prompt,
+				height,
+				width,
+				seed: seed || undefined
 			}
 		})
 	});
